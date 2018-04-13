@@ -1,7 +1,7 @@
 package net.atos.scalability.common.script.impl
 
-import net.atos.scalability.common.utils.Pipe._
 import net.atos.scalability.common.script.Script
+import net.atos.scalability.common.utils.Pipe._
 
 object TermFrequencyScript extends Script[Map[String, Int]]("term-frequency") {
 
