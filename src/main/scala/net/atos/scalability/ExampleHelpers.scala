@@ -5,6 +5,8 @@ import akka.stream.FlowShape
 import akka.stream.scaladsl.{Balance, Flow, GraphDSL, Merge}
 import net.atos.scalability.common.TextSubject
 import net.atos.scalability.common.script.Script
+import net.atos.scalability.common.utils.MapUtils._
+import net.atos.scalability.common.utils.Pipe._
 
 object ExampleHelpers {
 
