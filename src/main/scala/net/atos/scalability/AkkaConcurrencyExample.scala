@@ -3,6 +3,7 @@ package net.atos.scalability
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Source
+import net.atos.scalability.ExampleHelpers._
 import net.atos.scalability.common.TextSubject
 import net.atos.scalability.common.script.impl.TermFrequencyScript
 
