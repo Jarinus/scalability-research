@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Source
 import net.atos.scalability.common.TextSubject
 import net.atos.scalability.common.script.impl.TermFrequencyScript
 
-object Concurrency extends App {
+object AkkaConcurrencyExample extends App {
   implicit val system: ActorSystem = ActorSystem("Concurrency")
 
   Source.single("What is the name of the president of the United States?")
