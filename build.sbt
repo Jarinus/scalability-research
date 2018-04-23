@@ -1,4 +1,4 @@
-name := "scalability-with-akka"
+name := "text-analysis-app"
 
 version := "0.1"
 
