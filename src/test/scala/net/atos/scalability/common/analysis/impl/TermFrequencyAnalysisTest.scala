@@ -1,8 +1,8 @@
-package net.atos.scalability.common.script.impl
+package net.atos.scalability.common.analysis.impl
 
 import org.scalatest.{FunSuite, Matchers}
 
-class TermFrequencyScriptTest extends FunSuite with Matchers {
+class TermFrequencyAnalysisTest extends FunSuite with Matchers {
   val testString = "What is the name of the president of the United States?"
   val expectedTermFrequency = Map(
     "what" -> 1,
@@ -16,7 +16,7 @@ class TermFrequencyScriptTest extends FunSuite with Matchers {
   )
 
   test("term frequency") {
-    TermFrequencyScript.analyze(testString).toSet should equal (expectedTermFrequency.toSet)
+    TermFrequencyAnalysis.analyze(testString).toSet should equal (expectedTermFrequency.toSet)
   }
 
 }
