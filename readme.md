@@ -1,4 +1,7 @@
 # Scalability Research
+
+[![Build Status](https://travis-ci.com/Jarinus/scalability-research.svg?token=MKhDfVCLHhGXWqDxynsL&branch=develop)](https://travis-ci.com/Jarinus/scalability-research)
+
 The source code for the text analysis application. The application's purpose is to gain insight in developing scalable
 applications with the help of the Akka library. Additionally, this application is written in Scala to gain insight in
 the potential benefits of Scala in comparison to Java with respect to scalability.
