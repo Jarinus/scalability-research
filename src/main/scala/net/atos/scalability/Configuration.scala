@@ -1,15 +1,16 @@
 package net.atos.scalability
 
-case class Configuration(numberOfThreads: Int = 1)
+import scala.util.matching.Regex
+
+case class Configuration(numberOfThreads: Int = 1,
+                         endpointIp: String = "127.0.0.1")
 
 object Configuration {
+  val ipAddressRegex: Regex = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}".r
   val acceptedArguments: Map[String, (Configuration, Array[String]) => Configuration] = Map(
-    "-threads" -> ((configuration, values) => {
-      val numberOfThreads = values.head.toInt
+    "-threads" -> ((conf, values) => conf.copy(numberOfThreads = parseNumberOfThreads(values))),
 
-      require(numberOfThreads > 0)
-      configuration.copy(numberOfThreads)
-    })
+    "-endpoint" -> ((conf, values) => conf.copy(endpointIp = parseEndpointIp(values)))
   )
 
   def initialize(args: Array[String]): Configuration = parse(groupArgumentsAndValues(args))
@@ -18,7 +19,7 @@ object Configuration {
     def loop(args: Array[String], acc: Map[String, Array[String]]): Map[String, Array[String]] =
       if (args.isEmpty) acc
       else if (args.head.charAt(0) != '-')
-        throw new IllegalArgumentException(s"Argument ${args.head} must be prepended with '-'")
+        throw new IllegalArgumentException(s"Argument '${args.head}' must be prepended with '-'")
       else {
         val (values, remainder) = args.tail span (_.charAt(0) != '-')
         loop(remainder, acc + (args.head -> values))
@@ -41,5 +42,21 @@ object Configuration {
       }
 
     loop(arguments, Configuration())
+  }
+
+  private def parseNumberOfThreads(values: Array[String]): Int = {
+    val numberOfThreads = values.head.toInt
+
+    require(numberOfThreads > 0)
+
+    numberOfThreads
+  }
+
+  private def parseEndpointIp(values: Array[String]): String = {
+    val endpointIp = values.head
+
+    require(ipAddressRegex.findFirstIn(endpointIp).nonEmpty)
+
+    endpointIp
   }
 }
