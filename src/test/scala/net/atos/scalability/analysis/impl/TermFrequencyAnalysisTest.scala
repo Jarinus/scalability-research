@@ -1,8 +1,8 @@
 package net.atos.scalability.analysis.impl
 
-import org.scalatest.{FunSuite, Matchers}
+import org.scalatest.{Matchers, WordSpec, WordSpecLike}
 
-class TermFrequencyAnalysisTest extends FunSuite with Matchers {
+class TermFrequencyAnalysisTest extends WordSpec with Matchers{
   val testString = "What is the name of the president of the United States?"
   val expectedTermFrequency = Map(
     "what" -> 1,
@@ -15,8 +15,19 @@ class TermFrequencyAnalysisTest extends FunSuite with Matchers {
     "states" -> 1
   )
 
-  test("term frequency") {
-    TermFrequencyAnalysis.analyze(testString).toSet should equal (expectedTermFrequency.toSet)
+  "A term frequency analysis must" must {
+    val analyzed = TermFrequencyAnalysis.analyze(testString)
+
+    "be case insensitive" in {
+      analyzed forall { case (word, _) =>
+          word forall (_.isLower)
+      } shouldBe true
+    }
+
+    "completely match the expected set" in {
+      analyzed.toSet should equal (expectedTermFrequency.toSet)
+    }
+
   }
 
 }

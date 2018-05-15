@@ -7,14 +7,14 @@ scalaVersion := "2.12.5"
 val akkaVersion = "2.5.12"
 val akkaHttpVersion = "10.1.1"
 
+// Akka
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
+  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
 )
-
-// JSON
-libraryDependencies += "org.json4s" %% "json4s-native" % "3.6.0-M3"
 
 // Scala Test
 libraryDependencies ++= Seq(
@@ -22,8 +22,7 @@ libraryDependencies ++= Seq(
   "org.scalatest" %% "scalatest" % "3.0.5" % Test
 )
 
-// Logging
+// Logback
 libraryDependencies ++= Seq(
-  "ch.qos.logback" % "logback-classic" % "1.2.3",
-  "com.typesafe.akka" %% "akka-slf4j" % akkaVersion
+  "ch.qos.logback" % "logback-classic" % "1.2.3"
 )
