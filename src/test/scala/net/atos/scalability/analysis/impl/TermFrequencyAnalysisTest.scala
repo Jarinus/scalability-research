@@ -1,4 +1,4 @@
-package net.atos.scalability.common.analysis.impl
+package net.atos.scalability.analysis.impl
 
 import org.scalatest.{FunSuite, Matchers}
 

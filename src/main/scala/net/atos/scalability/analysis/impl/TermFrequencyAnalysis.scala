@@ -1,6 +1,6 @@
-package net.atos.scalability.common.analysis.impl
+package net.atos.scalability.analysis.impl
 
-import net.atos.scalability.common.analysis.TextAnalysis
+import net.atos.scalability.analysis.TextAnalysis
 
 object TermFrequencyAnalysis extends TextAnalysis[Map[String, Int]]("term-frequency") {
 

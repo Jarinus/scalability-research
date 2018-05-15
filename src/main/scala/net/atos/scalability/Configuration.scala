@@ -1,32 +1,39 @@
 package net.atos.scalability
 
+import net.atos.scalability.Configuration._
+
 import scala.util.matching.Regex
 
-case class Configuration(numberOfThreads: Int = 1,
-                         endpointIp: String = "127.0.0.1")
+case class Configuration(numberOfWorkers: Int = DEFAULT_NUMBER_OF_WORKERS,
+                         endpoint: (String, Int) = (DEFAULT_IP, DEFAULT_PORT))
 
 object Configuration {
-  val ipAddressRegex: Regex = "\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}".r
-  val acceptedArguments: Map[String, (Configuration, Array[String]) => Configuration] = Map(
-    "-threads" -> ((conf, values) => conf.copy(numberOfThreads = parseNumberOfThreads(values))),
-
-    "-endpoint" -> ((conf, values) => conf.copy(endpointIp = parseEndpointIp(values)))
+  type ConfigurationArgumentParser = (Configuration, Array[String]) => Configuration
+  val DEFAULT_NUMBER_OF_WORKERS: Int = 1
+  val DEFAULT_IP = "127.0.0.1"
+  val DEFAULT_PORT: Int = 9000
+  private val endpointRegex: Regex = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?::(\\d{2,5}))?".r
+  private val acceptedArguments: Map[String, ConfigurationArgumentParser] = Map(
+    "-workers" -> parseNumberOfWorkers,
+    "-endpoint" -> parseEndpoint
   )
 
-  def initialize(args: Array[String]): Configuration = parse(groupArgumentsAndValues(args))
+  def from(args: Array[String]): Configuration = parse(groupArgumentsAndValues(args))
 
   private def groupArgumentsAndValues(args: Array[String]): Map[String, Array[String]] = {
     def loop(args: Array[String], acc: Map[String, Array[String]]): Map[String, Array[String]] =
       if (args.isEmpty) acc
-      else if (args.head.charAt(0) != '-')
+      else if (!isArgument(args.head))
         throw new IllegalArgumentException(s"Argument '${args.head}' must be prepended with '-'")
       else {
-        val (values, remainder) = args.tail span (_.charAt(0) != '-')
+        val (values, remainder) = args.tail span (!isArgument(_))
         loop(remainder, acc + (args.head -> values))
       }
 
     loop(args, Map())
   }
+
+  private def isArgument(s: String): Boolean = s.charAt(0) == '-'
 
   private def parse(arguments: Map[String, Array[String]]): Configuration = {
     def loop(arguments: Map[String, Array[String]], configuration: Configuration): Configuration =
@@ -44,19 +51,23 @@ object Configuration {
     loop(arguments, Configuration())
   }
 
-  private def parseNumberOfThreads(values: Array[String]): Int = {
-    val numberOfThreads = values.head.toInt
+  private def parseNumberOfWorkers(configuration: Configuration, values: Array[String]): Configuration = {
+    val numberOfWorkers = values.head.toInt
 
-    require(numberOfThreads > 0)
+    require(numberOfWorkers > 0)
 
-    numberOfThreads
+    configuration.copy(numberOfWorkers = numberOfWorkers)
   }
 
-  private def parseEndpointIp(values: Array[String]): String = {
-    val endpointIp = values.head
+  private def parseEndpoint(configuration: Configuration, values: Array[String]): Configuration = {
+    val endpoint = values.head
 
-    require(ipAddressRegex.findFirstIn(endpointIp).nonEmpty)
-
-    endpointIp
+    endpoint match {
+      case endpointRegex(ip, port) =>
+        configuration.copy(endpoint = (ip, if (port != null) port.toInt else DEFAULT_PORT))
+      case _ =>
+        throw new IllegalArgumentException(
+          s"Invalid endpoint '$endpoint', expected (regex) format: ${endpointRegex.toString}")
+    }
   }
 }
