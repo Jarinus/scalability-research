@@ -8,8 +8,6 @@ import akka.routing.RoundRobinPool
 import net.atos.scalability.actor.AnalysisSupervisor.Request
 import net.atos.scalability.analysis.{TextAnalysis, TextSubject}
 
-import scala.concurrent.Future
-
 class AnalysisSupervisor(numberOfActors: Int) extends Actor {
   val log = Logging(context.system, this)
   val children: ActorRef = context.actorOf(

@@ -17,15 +17,19 @@ By default, you can create a Docker container by executing:
 
 `sbt docker:publishLocal`
 
-To run the container:
+To run the container (anything in parentheses is optional):
 
-`docker run -t -p PUBLISHING_PORT:8080 text-analysis-app -workers NUMBER_OF_WORKERS`
+`docker run -(i)t -p PUBLISHING_PORT:8080 text-analysis-app (-workers NUMBER_OF_WORKERS)`
 
 Where `PUBLISHING_PORT` is the port to publish the service on and `NUMBER_OF_WORKERS` is the number of workers used for
 text analysis.
 
-Note that `-workers NUMBER_OF_WORKERS` may be omitted. In that case, a single worker will be used.
+If `-workers NUMBER_OF_WORKERS` is omitted, a single worker will be used.
+
+Note that `-t` keeps the container running in the background. If you wish for the container to exit if you exit the
+shell, use `-it` (`-i` stands for interactive). This will allow you to press any key to exit the program, killing the
+container in the process.
 
 Example:
 
-`docker run -t -p 8080:8080 text-analysis-app -workers 8`
+`docker run -it -p 8080:8080 text-analysis-app -workers 8`

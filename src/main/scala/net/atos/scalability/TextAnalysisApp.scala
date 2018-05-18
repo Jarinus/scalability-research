@@ -22,7 +22,8 @@ object TextAnalysisApp {
 
     val bindingFuture = Http().bindAndHandle(API.route, host, port)
 
-    println(s"Text Analysis App listening on $host:$port (locally)")
+    println(s"Text Analysis App is listening on $host:$port (locally)"
+      + "\nPress any key to exit...")
 
     StdIn.readLine()
 
