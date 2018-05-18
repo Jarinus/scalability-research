@@ -15,7 +15,7 @@ class TermFrequencyAnalysisTest extends WordSpec with Matchers{
     "states" -> 1
   )
 
-  "A term frequency analysis must" must {
+  "A term frequency analysis" must {
     val analyzed = TermFrequencyAnalysis.analyze(testString)
 
     "be case insensitive" in {

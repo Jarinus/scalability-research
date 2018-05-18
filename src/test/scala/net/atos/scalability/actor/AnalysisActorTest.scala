@@ -13,7 +13,7 @@ class AnalysisActorTest extends TestKit(ActorSystem("AnalysisActorTest")) with I
     TestKit.shutdownActorSystem(system)
   }
 
-  "An analysis actor must" must {
+  "An analysis actor" must {
 
     "send back a response with the analysis added" in {
       val analysisActor = system.actorOf(AnalysisActor.props)
