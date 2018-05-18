@@ -1,12 +1,33 @@
+import com.typesafe.sbt.packager.docker.Cmd
+
 name := "text-analysis-app"
+mainClass in Compile := Some("net.atos.scalability.TextAnalysisApp")
 
 version := "0.1"
-
 scalaVersion := "2.12.5"
-
 val akkaVersion = "2.5.12"
 val akkaHttpVersion = "10.1.1"
 
+/*
+ * Docker
+ */
+enablePlugins(JavaAppPackaging)
+enablePlugins(DockerPlugin)
+enablePlugins(AshScriptPlugin)
+
+dockerBuildOptions ++= List(
+  "-t",
+  dockerAlias.value.copy(tag = Some("latest")).versioned)
+
+dockerCommands ++= Seq(
+  Cmd("ENV", "port=8080"),
+  Cmd("EXPOSE", "$port"))
+
+dockerBaseImage := "openjdk:jre-alpine"
+packageName in Docker := "text-analysis-app"
+/*
+ * Dependencies
+ */
 // Akka
 libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,

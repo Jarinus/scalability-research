@@ -2,20 +2,16 @@ package net.atos.scalability
 
 import net.atos.scalability.Configuration._
 
-import scala.util.matching.Regex
-
 case class Configuration(numberOfWorkers: Int = DEFAULT_NUMBER_OF_WORKERS,
                          endpoint: (String, Int) = (DEFAULT_IP, DEFAULT_PORT))
 
 object Configuration {
   type ConfigurationArgumentParser = (Configuration, Array[String]) => Configuration
   val DEFAULT_NUMBER_OF_WORKERS: Int = 1
-  val DEFAULT_IP = "127.0.0.1"
-  val DEFAULT_PORT: Int = 9000
-  private val endpointRegex: Regex = "(\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3})(?::(\\d{2,5}))?".r
+  val DEFAULT_IP = "0.0.0.0"
+  val DEFAULT_PORT: Int = System.getenv("port").toInt
   private val acceptedArguments: Map[String, ConfigurationArgumentParser] = Map(
-    "-workers" -> parseNumberOfWorkers,
-    "-endpoint" -> parseEndpoint
+    "-workers" -> parseNumberOfWorkers
   )
 
   def from(args: Array[String]): Configuration = parse(groupArgumentsAndValues(args))
@@ -57,17 +53,5 @@ object Configuration {
     require(numberOfWorkers > 0)
 
     configuration.copy(numberOfWorkers = numberOfWorkers)
-  }
-
-  private def parseEndpoint(configuration: Configuration, values: Array[String]): Configuration = {
-    val endpoint = values.head
-
-    endpoint match {
-      case endpointRegex(ip, port) =>
-        configuration.copy(endpoint = (ip, if (port != null) port.toInt else DEFAULT_PORT))
-      case _ =>
-        throw new IllegalArgumentException(
-          s"Invalid endpoint '$endpoint', expected (regex) format: ${endpointRegex.toString}")
-    }
   }
 }
