@@ -5,8 +5,11 @@ jdk: oraclejdk8
 scala: 2.12.6
 jobs:
   include:
+    - stage: test
+      script:
+      - sbt ++$TRAVIS_SCALA_VERSION test
     - stage: deploy
-      script :
+      script:
       - docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
       - sbt docker:publish
 env:
