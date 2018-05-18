@@ -8,7 +8,7 @@ services:
 after_success:
 - sbt docker:publishLocal
 - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-- docker push jarinus/text-analysis-app
+- docker push $DOCKER_USERNAME/text-analysis-app
 env:
   matrix:
   - secure: r6M6Q0jsi3+2vdMc8Xjdv5C2PPGNOcLflWynjqeO4ojO3d/gASsh9P8kFLJIc/dlZtaF1sXV3qj8hES77GiGtQYRefmsH/uV0yff0SErmXrVMaxD1i77EbmvCYMPn/fsORBujVaC4s5tXxW3VfdOZ5bxZB7RMKZupJKu1fg35C33/RkIhWGfRUXX1SkvZhKfatSUHjmwh51UhoPULtAR8NXjn0p/91ZNZW9ZBFXYTtPoPo+jPMnYAROQZCp9gyB73Pjxp8RsWrATq3bPT3DfrcJQWcQFtNvuyeXMBMBFa0HkaYOirIVHBCPlkrl9i2EBsxmvyZ1t+kTCO0kSmXItwdaE3v4flViSxiL/uqJwVlym63jq7kQzDJPa/X86tmf71mpYkC6milFD5W0Kn1NGAtCbSIUgFTTjQCpe9UxtWgOUgQzhSOnIOi3JjOfwy7VFa4ejmHO9Y1hetvtSNqk2jOkh3/LC4ZEjvkLuxRJPBDrRb6S3ytdfewS73rJ9wR3RnCbRCpCAyhg/oXyjx8LdmAupZOADcuPgFK8EXmWOeKKwzudYYFN857U4CCwthqKA/+0knQHcb8QFSs8MudQhCJaPpPgRO6kkgTSon0T44tqnBGUDA3DuW3U0g1JD3f+7zG8UOUfcDiJwyYkox19FJl/bdL/YrGAH/qTGwhU2Y08=
