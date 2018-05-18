@@ -15,6 +15,9 @@ enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
 enablePlugins(AshScriptPlugin)
 
+dockerBaseImage := "openjdk:jre-alpine"
+packageName in Docker := "text-analysis-app"
+
 dockerBuildOptions ++= List(
   "-t",
   dockerAlias.value.copy(tag = Some("latest")).versioned)
@@ -23,13 +26,10 @@ dockerCommands ++= Seq(
   Cmd("ENV", "port=8080"),
   Cmd("EXPOSE", "$port"))
 
-dockerBaseImage := "openjdk:jre-alpine"
-packageName in Docker := "text-analysis-app"
 /*
  * Dependencies
  */
-// Akka
-libraryDependencies ++= Seq(
+libraryDependencies ++= Seq( // Akka
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
@@ -37,13 +37,11 @@ libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
 )
 
-// Scala Test
-libraryDependencies ++= Seq(
+libraryDependencies ++= Seq( // Scala Test
   "org.scalactic" %% "scalactic" % "3.0.5",
   "org.scalatest" %% "scalatest" % "3.0.5" % Test
 )
 
-// Logback
-libraryDependencies ++= Seq(
+libraryDependencies ++= Seq( // Logback
   "ch.qos.logback" % "logback-classic" % "1.2.3"
 )
