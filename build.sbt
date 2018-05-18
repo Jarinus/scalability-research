@@ -11,6 +11,7 @@ val akkaHttpVersion = "10.1.1"
 /*
  * Docker
  */
+
 enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
 enablePlugins(AshScriptPlugin)
@@ -21,10 +22,6 @@ packageName in Docker := "text-analysis-app"
 dockerUsername := Some("jarinus")
 dockerUpdateLatest := true
 
-//dockerBuildOptions ++= List(
-//  "-t",
-//  dockerAlias.value.copy(tag = Some("latest")).versioned)
-
 dockerCommands ++= Seq(
   Cmd("ENV", "port=8080"),
   Cmd("EXPOSE", "$port"))
@@ -32,19 +29,19 @@ dockerCommands ++= Seq(
 /*
  * Dependencies
  */
-libraryDependencies ++= Seq( // Akka
+
+// Akka
+libraryDependencies ++= Seq(
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
-  "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion
-)
+  "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion)
 
-libraryDependencies ++= Seq( // Scala Test
+// Scala Test
+libraryDependencies ++= Seq(
   "org.scalactic" %% "scalactic" % "3.0.5",
-  "org.scalatest" %% "scalatest" % "3.0.5" % Test
-)
+  "org.scalatest" %% "scalatest" % "3.0.5" % Test)
 
-libraryDependencies ++= Seq( // Logback
-  "ch.qos.logback" % "logback-classic" % "1.2.3"
-)
+// Logback
+libraryDependencies += "ch.qos.logback" % "logback-classic" % "1.2.3"
