@@ -18,9 +18,12 @@ enablePlugins(AshScriptPlugin)
 dockerBaseImage := "openjdk:jre-alpine"
 packageName in Docker := "text-analysis-app"
 
-dockerBuildOptions ++= List(
-  "-t",
-  dockerAlias.value.copy(tag = Some("latest")).versioned)
+dockerUsername := Some("jarinus")
+dockerUpdateLatest := true
+
+//dockerBuildOptions ++= List(
+//  "-t",
+//  dockerAlias.value.copy(tag = Some("latest")).versioned)
 
 dockerCommands ++= Seq(
   Cmd("ENV", "port=8080"),
