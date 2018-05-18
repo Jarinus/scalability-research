@@ -1,6 +1,6 @@
 import com.typesafe.sbt.packager.docker.Cmd
 
-name := "text-analysis-app"
+name := "jarinus/text-analysis-app"
 mainClass in Compile := Some("net.atos.scalability.TextAnalysisApp")
 
 version := "0.1"
