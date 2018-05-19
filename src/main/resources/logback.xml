@@ -13,7 +13,7 @@
         </triggeringPolicy>
 
         <encoder>
-            <pattern>%-5level[%logger{36}] [%d{yyyy-MM-dd HH:mm:ss.SSS}] %msg%n%n</pattern>
+            <pattern>%-5level[%logger{36}] [%d{yyyy-MM-dd HH:mm:ss.SSS}] %msg%n</pattern>
         </encoder>
     </appender>
 
