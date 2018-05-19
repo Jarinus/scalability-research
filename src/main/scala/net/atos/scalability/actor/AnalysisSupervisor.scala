@@ -13,23 +13,28 @@ class AnalysisSupervisor(numberOfActors: Int) extends Actor {
   val children: ActorRef = context.actorOf(
     AnalysisActor.props.withRouter(RoundRobinPool(numberOfActors)),
     name = "AnalysisActors")
-  var progressCounters: Map[String, AtomicInteger] = Map()
 
-  override def receive: Receive = {
+  override def receive: Receive = withProgressCounters(Map())
+
+  private def withProgressCounters(implicit progressCounters: Map[String, AtomicInteger]): Receive = {
     case Request(uuid, subjects, analyses) =>
-      log.info(s"Starting '$uuid'")
-
-      progressCounters += (uuid -> new AtomicInteger(subjects.length))
+      context.become(
+        withProgressCounters(
+          progressCounters + (uuid -> new AtomicInteger(subjects.length))))
 
       subjects.par map { subject =>
         TextSubject(uuid, subject, analyses)
       } foreach onReceiveTextSubject
 
+      log.info(s"Started '$uuid'")
+
     case AnalysisActor.TaskResponse(subject) =>
       onReceiveTextSubject(subject)
   }
 
-  private def onReceiveTextSubject(subject: TextSubject): Unit = subject.remainingAnalyses match {
+  private def onReceiveTextSubject(subject: TextSubject)
+                                  (implicit progressCounters: Map[String, AtomicInteger])
+  : Unit = subject.remainingAnalyses match {
     case Nil =>
       val progressCounter = progressCounters(subject.analysisId)
       val remaining = progressCounter.decrementAndGet()
@@ -43,9 +48,13 @@ class AnalysisSupervisor(numberOfActors: Int) extends Actor {
       children ! request
   }
 
-  private def onCompleted(subject: TextSubject): Unit = {
+  private def onCompleted(subject: TextSubject)
+                         (implicit progressCounters: Map[String, AtomicInteger])
+  : Unit = {
     log.info(s"Completed '${subject.analysisId}'")
-    progressCounters -= subject.analysisId
+    context.become(
+      withProgressCounters(
+        progressCounters - subject.analysisId))
   }
 }
 
@@ -55,5 +64,9 @@ object AnalysisSupervisor {
   case class Request(uuid: String, subjects: List[String], analyses: List[TextAnalysis.Tag])
 
   case class Response(uuid: String, numberOfSubjects: Int)
+
+  case class AddProgressCounter(uuid: String, count: Int)
+
+  case class RemoveProgressCounter(uuid: String)
 
 }
