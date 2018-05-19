@@ -4,13 +4,13 @@ name := "jarinus/text-analysis-app"
 mainClass in Compile := Some("net.atos.scalability.TextAnalysisApp")
 
 version := "0.2"
-scalaVersion := "2.12.5"
+scalaVersion := "2.12.6"
 val akkaVersion = "2.5.12"
 val akkaHttpVersion = "10.1.1"
 
-/*
- * Docker
- */
+//
+// Docker
+//
 
 enablePlugins(JavaAppPackaging)
 enablePlugins(DockerPlugin)
@@ -26,9 +26,9 @@ dockerCommands ++= Seq(
   Cmd("ENV", "port=8080"),
   Cmd("EXPOSE", "$port"))
 
-/*
- * Dependencies
- */
+//
+// Dependencies
+//
 
 // Akka
 libraryDependencies ++= Seq(
