@@ -9,6 +9,14 @@ val akkaVersion = "2.5.12"
 val akkaHttpVersion = "10.1.1"
 
 //
+// Code quality
+//
+
+wartremoverErrors ++= Warts.unsafe
+// Akka uses the Any type for actor messaging
+wartremoverErrors -= Wart.Any
+
+//
 // Docker
 //
 
