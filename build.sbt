@@ -27,6 +27,7 @@ enablePlugins(AshScriptPlugin)
 dockerBaseImage := "openjdk:jre-alpine"
 packageName in Docker := "text-analysis-app"
 
+dockerUsername := Some("jarinus")
 dockerUpdateLatest := true
 
 dockerCommands ++= Seq(
