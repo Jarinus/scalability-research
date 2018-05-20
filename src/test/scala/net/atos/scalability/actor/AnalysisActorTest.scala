@@ -17,7 +17,7 @@ class AnalysisActorTest extends TestKit(ActorSystem("AnalysisActorTest")) with I
 
     "send back a response with the analysis added" in {
       val analysisActor = system.actorOf(AnalysisActor.props)
-      val subject = TextSubject("id", "Test", Nil)
+      val subject = TextSubject.from("id", "Test", Nil)
       val analysis = new TextAnalysis[String]("test") {
         override protected def analyze(subject: String): String = subject
       }

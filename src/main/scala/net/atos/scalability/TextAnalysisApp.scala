@@ -25,7 +25,7 @@ object TextAnalysisApp {
     println(s"Text Analysis App is listening on $host:$port (locally)"
       + "\nPress any key to exit...")
 
-    StdIn.readLine()
+    val _ = StdIn.readLine()
 
     bindingFuture
       .flatMap(_.unbind())

@@ -3,4 +3,9 @@ package net.atos.scalability.analysis
 case class TextSubject private(analysisId: String,
                                original: String,
                                remainingAnalyses: List[TextAnalysis.Tag],
-                               analyzedValuesMap: Map[TextAnalysis.Tag, Any] = Map())
+                               analyzedValuesMap: Map[TextAnalysis.Tag, Any])
+
+object TextSubject {
+  def from(analysisId: String, original: String, remainingAnalyses: List[TextAnalysis.Tag]): TextSubject =
+    TextSubject(analysisId, original, remainingAnalyses, Map())
+}

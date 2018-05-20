@@ -1,9 +1,7 @@
 package net.atos.scalability
 
-import net.atos.scalability.Configuration._
-
-case class Configuration(numberOfWorkers: Int = DEFAULT_NUMBER_OF_WORKERS,
-                         endpoint: (String, Int) = (DEFAULT_IP, DEFAULT_PORT))
+case class Configuration(numberOfWorkers: Int,
+                         endpoint: (String, Int))
 
 object Configuration {
   type ConfigurationArgumentParser = (Configuration, Array[String]) => Configuration
@@ -17,14 +15,12 @@ object Configuration {
   def from(args: Array[String]): Configuration = parse(groupArgumentsAndValues(args))
 
   private def groupArgumentsAndValues(args: Array[String]): Map[String, Array[String]] = {
-    def loop(args: Array[String], acc: Map[String, Array[String]]): Map[String, Array[String]] =
-      if (args.isEmpty) acc
-      else if (!isArgument(args.head))
-        throw new IllegalArgumentException(s"Argument '${args.head}' must be prepended with '-'")
-      else {
-        val (values, remainder) = args.tail span (!isArgument(_))
-        loop(remainder, acc + (args.head -> values))
-      }
+    def loop(args: Array[String], acc: Map[String, Array[String]]): Map[String, Array[String]] = args.headOption match {
+      case Some(head) =>
+        val (values, remainder) = args.drop(1) span (!isArgument(_))
+        loop(remainder, acc + (head -> values))
+      case None => acc
+    }
 
     loop(args, Map())
   }
@@ -32,20 +28,24 @@ object Configuration {
   private def isArgument(s: String): Boolean = s.charAt(0) == '-'
 
   private def parse(arguments: Map[String, Array[String]]): Configuration = {
-    def loop(arguments: Map[String, Array[String]], configuration: Configuration): Configuration =
-      if (arguments.isEmpty) configuration
-      else loop(arguments.tail, parseArgument(configuration, arguments.head))
+    def loop(arguments: Map[String, Array[String]], configuration: Configuration): Configuration = arguments.headOption match {
+      case Some(head) =>
+        val newConfiguration = parseArgument(configuration, head) getOrElse configuration
+        loop(arguments.drop(1), newConfiguration)
+      case None => configuration
+    }
 
-    def parseArgument(configuration: Configuration, argumentWithValue: (String, Array[String])): Configuration =
+    def parseArgument(configuration: Configuration, argumentWithValue: (String, Array[String])): Option[Configuration] =
       argumentWithValue match {
-        case (argument, values) => acceptedArguments.get(argument) match {
-          case Some(updateFunction) => updateFunction(configuration, values)
-          case None => throw new IllegalArgumentException(s"Invalid argument: $argument")
+        case (argument, values) => acceptedArguments.get(argument) map { parseFunction =>
+          parseFunction(configuration, values)
         }
       }
 
-    loop(arguments, Configuration())
+    loop(arguments, Configuration.default)
   }
+
+  def default = Configuration(DEFAULT_NUMBER_OF_WORKERS, (DEFAULT_IP, DEFAULT_PORT))
 
   private def parseNumberOfWorkers(configuration: Configuration, values: Array[String]): Configuration = {
     val numberOfWorkers = values.head.toInt

@@ -23,7 +23,7 @@ class AnalysisSupervisor(numberOfActors: Int) extends Actor {
           progressCounters + (uuid -> new AtomicInteger(subjects.length))))
 
       subjects.par map { subject =>
-        TextSubject(uuid, subject, analyses)
+        TextSubject.from(uuid, subject, analyses)
       } foreach onReceiveTextSubject
 
       log.info(s"Started '$uuid'")
