@@ -10,6 +10,7 @@ object TermFrequencyAnalysis extends TextAnalysis[Map[String, Int]]("term-freque
       .split(" ")
       .groupBy(identity)
       .mapValues(_.length)
+      .map(identity)
 
   private def omitPunctuationMarks(s: String): String =
     s replaceAll("[^a-zA-Z\\d\\s]", "")

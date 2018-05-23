@@ -31,6 +31,7 @@ libraryDependencies ++= Seq(
   // Akka
   "com.typesafe.akka" %% "akka-stream" % akkaVersion,
   "com.typesafe.akka" %% "akka-slf4j" % akkaVersion,
+  "com.typesafe.akka" %% "akka-cluster-sharding" % akkaVersion,
   "com.typesafe.akka" %% "akka-testkit" % akkaVersion % Test,
   "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
   "com.typesafe.akka" %% "akka-http-spray-json" % akkaHttpVersion,
@@ -38,6 +39,9 @@ libraryDependencies ++= Seq(
   // Scala Test
   "org.scalactic" %% "scalactic" % scalaTestVersion,
   "org.scalatest" %% "scalatest" % scalaTestVersion % Test,
+
+  // JSON4S for recursive JSON (required for TextSubject's Map[String, Any])
+  "org.json4s" %% "json4s-native" % "3.6.0-M3",
 
   // Logback
   "ch.qos.logback" % "logback-classic" % logbackVersion)
