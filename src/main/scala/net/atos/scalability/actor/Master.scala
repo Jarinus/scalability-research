@@ -36,9 +36,12 @@ class Master(workerRouter: ActorRef) extends StatefulActor[State] with ActorLogg
 
     case Worker.TaskResponse(subject) =>
       update(handle(subject)(state))
+
+    case Terminate =>
+      context stop self
   }
 
-  def handle(subject: TextSubject): State => State = state => subject.remainingAnalyses match {
+  private def handle(subject: TextSubject): State => State = state => subject.remainingAnalyses match {
     case Nil =>
       state.get(subject.analysisId) match {
         case Some(information) =>
