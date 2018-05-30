@@ -18,10 +18,15 @@ object TextAnalysisApp {
   def main(args: Array[String]): Unit = run(Configuration from args)
 
   def run(configuration: Configuration): Unit = {
+    require(
+      configuration.seedNodes.nonEmpty,
+      "At least one seed node must be defined (the seed node must define itself as the seed node)")
+
     val (host, port) = configuration.endpoint
     val config = loadConfig(
       "akka.remote.netty.tcp.hostname" -> (if (host == "0.0.0.0") "127.0.0.1" else host),
-      "akka.remote.netty.tcp.port" -> (port + 1).toString)
+      "akka.remote.netty.tcp.port" -> (port + 1).toString,
+      "akka.cluster.seed-nodes" -> configuration.seedNodes.mkString("[\"\"\"", "\"\"\", \"\"\"", "\"\"\"]"))
       .withFallback(ConfigFactory.load)
 
     implicit val system: ActorSystem = ActorSystem("TextAnalysisApp", config)
@@ -59,7 +64,7 @@ object TextAnalysisApp {
       Http().bindAndHandle(API.route, host, port)
     }
 
-    println(s"Text Analysis App is listening on $host:$port (locally)\n"
+    println(s"Text Analysis App is listening on $host:$port-${port + 1} (locally)\n"
       + "Press any key to exit...")
   }
 

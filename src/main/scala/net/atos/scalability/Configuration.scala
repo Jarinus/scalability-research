@@ -1,15 +1,21 @@
 package net.atos.scalability
 
 case class Configuration(numberOfWorkers: Int,
-                         endpoint: (String, Int))
+                         endpoint: (String, Int),
+                         seedNodes: List[String])
 
 object Configuration {
   type ConfigurationArgumentParser = (Configuration, Array[String]) => Configuration
   val DEFAULT_NUMBER_OF_WORKERS: Int = 1
   val DEFAULT_IP = "0.0.0.0"
   val DEFAULT_PORT: Int = System.getenv("port").toInt
+  private val seedNodeRegex =
+    "akka\\.tcp:\\/\\/[a-zA-Z0-9]+@(?:\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}|[a-z-]+):\\d{2,6}".r
   private val acceptedArguments: Map[String, ConfigurationArgumentParser] = Map(
-    "-workers" -> parseNumberOfWorkers
+    "--workers" -> parseNumberOfWorkers,
+    "--seed-nodes" -> parseSeedNodes,
+    "-w" -> parseNumberOfWorkers,
+    "-s" -> parseSeedNodes,
   )
 
   def from(args: Array[String]): Configuration = parse(groupArgumentsAndValues(args))
@@ -45,7 +51,7 @@ object Configuration {
     loop(arguments, Configuration.default)
   }
 
-  def default = Configuration(DEFAULT_NUMBER_OF_WORKERS, (DEFAULT_IP, DEFAULT_PORT))
+  def default = Configuration(DEFAULT_NUMBER_OF_WORKERS, (DEFAULT_IP, DEFAULT_PORT), Nil)
 
   private def parseNumberOfWorkers(configuration: Configuration, values: Array[String]): Configuration = {
     val numberOfWorkers = values.head.toInt
@@ -54,4 +60,13 @@ object Configuration {
 
     configuration.copy(numberOfWorkers = numberOfWorkers)
   }
+
+  private def parseSeedNodes(configuration: Configuration, values: Array[String]): Configuration = {
+    require(values forall {
+      seedNodeRegex.findFirstMatchIn(_).nonEmpty
+    })
+
+    configuration.copy(seedNodes = values.toList)
+  }
+
 }
