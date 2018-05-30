@@ -28,9 +28,9 @@ To run the container (anything in parentheses is optional):
 `docker run -(i)t -p PORT-PORT+1:8080-8081 text-analysis-app (-w NUMBER_OF_WORKERS) -s AKKA_TCP_SEED_NODE_ADDRESS(ES)`
 
 Where:
-* `PUBLISHING_PORT` is the port to publish the service on;
-* `NUMBER_OF_WORKERS` is the number of workers used for
-text analysis.
+* `PORT` is the port to publish the service on;
+* `NUMBER_OF_WORKERS` is the number of workers used for text analysis.
+* `AKKA_TCP_SEED_NODE_ADDRESS(ES)` is/are the address(es) of the Akka TCP seed nodes.
 
 Note:
 * If `-w NUMBER_OF_WORKERS` is omitted, a single worker will be used.
