@@ -22,10 +22,12 @@ object TextAnalysisApp {
       configuration.seedNodes.nonEmpty,
       "At least one seed node must be defined (the seed node must define itself as the seed node)")
 
-    val (host, port) = configuration.endpoint
+    val (host, port) = configuration.akkaAddress
     val config = loadConfig(
-      "akka.remote.netty.tcp.hostname" -> (if (host == "0.0.0.0") "127.0.0.1" else host),
-      "akka.remote.netty.tcp.port" -> (port + 1).toString,
+      "akka.remote.netty.tcp.hostname" -> host,
+      "akka.remote.netty.tcp.port" -> port.toString,
+      "akka.remote.netty.tcp.bind-hostname" -> configuration.dockerIp,
+      "akka.remote.netty.tcp.bind-port" -> port.toString,
       "akka.cluster.seed-nodes" -> configuration.seedNodes.mkString("[\"\"\"", "\"\"\", \"\"\"", "\"\"\"]"))
       .withFallback(ConfigFactory.load)
 
@@ -61,11 +63,13 @@ object TextAnalysisApp {
     }
 
     discard {
-      Http().bindAndHandle(API.route, host, port)
+      Http().bindAndHandle(API.route, "0.0.0.0", configuration.httpPort)
     }
 
-    println(s"Text Analysis App is listening on $host:$port-${port + 1} (locally)\n"
-      + "Press any key to exit...")
+    println(
+      s"""Text Analysis App is listening on 0.0.0.0:${configuration.httpPort}
+         |Akka is listening on $host:$port
+         |Press any key to exit...""".stripMargin)
   }
 
   private def loadConfig(keyValuePairs: (String, Any)*): Config =

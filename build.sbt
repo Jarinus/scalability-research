@@ -5,7 +5,7 @@ name := "jarinus/text-analysis-app"
 mainClass in Compile := Some("net.atos.scalability.TextAnalysisApp")
 
 // Versions
-version := "0.3"
+version := "0.4"
 scalaVersion := "2.12.6"
 val akkaVersion = "2.5.12"
 val akkaHttpVersion = "10.1.1"
