@@ -29,7 +29,7 @@ Create a local Docker container by executing:
 * `--seed-nodes, -s` The Akka TCP URL('s) of the seed node(s).
 
 ### Running
-Default run command (anything in parentheses is optional):
+Example run command (anything in parentheses is optional):
 
 ```
 $ docker run \
@@ -78,7 +78,6 @@ $ docker run \
 > -p 8080-8081:8080-8081 \
 > jarinus/text-analysis-app \
 > --akka-host REMOTE_IP \
-> --docker-ip 172.18.0.2 \
 > -w 8 \
 > -s akka.tcp://TextAnalysisApp@REMOTE_IP:8081
 ```
